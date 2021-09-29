@@ -5,6 +5,7 @@
 #ifndef INF8775_TP1_MATRIX_H
 #define INF8775_TP1_MATRIX_H
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -14,17 +15,21 @@ public:
 
     Matrix(vector<vector<int>> newData);
 
-    Matrix();
+    Matrix(int size);
 
-    void populateRow(vector<int> newRow);
+    void populateRow(const vector<int> &newRow);
 
     void populateColumn (vector<int> newColumn);
 
-    int getNumber(int i, int j);
+    int getNumber(int i, int j) const;
 
-    int getSize();
+    void setNumber(const int &i, const int &j, const int &value);
 
-    bool subdivise(array<Matrix,4>& miniMatrix);
+    int getSize() const;
+
+    bool subdivise(array<Matrix,4>& miniMatrix) const;
+
+    string toString() const;
 };
 
 

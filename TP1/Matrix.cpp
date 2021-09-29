@@ -5,14 +5,22 @@
 #include <string>
 #include "Matrix.h"
 #include <array>
+#include <sstream>
 
 Matrix::Matrix(vector<vector<int>> newData){
 
-data = newData;
-
+    data = newData;
 }
 
-void Matrix::populateRow (vector<int> newRow) {
+Matrix::Matrix(int size) {
+
+    for (int i = 0; i < size; ++i) {
+        vector<int> matrixLine(size);
+        data.push_back(matrixLine);
+    }
+}
+
+void Matrix::populateRow (const vector<int> &newRow) {
     data.push_back(newRow);
 }
 
@@ -25,17 +33,20 @@ void Matrix::populateColumn (vector<int> newColumn) {
     }
 }
 
-int Matrix::getNumber(int i, int j) {
+int Matrix::getNumber(int i, int j) const {
     return data[i][j];
-
 }
 
-int Matrix::getSize() {
+void Matrix::setNumber(const int &i, const int &j, const int &value) {
+    data[i][j] = value;
+}
+
+int Matrix::getSize() const {
     return data.size();
 }
 
 
-bool Matrix::subdivise(array<Matrix,4>& miniMatrix) {
+bool Matrix::subdivise(array<Matrix,4>& miniMatrix) const {
     if(data.size() % 2 != 0) {
         return false;
     }
@@ -53,4 +64,18 @@ bool Matrix::subdivise(array<Matrix,4>& miniMatrix) {
     return true;
 
 
+}
+
+string Matrix::toString() const {
+    std::stringstream ss;
+    for (auto & line : data)
+    {
+        ss << line[0];
+        for (int j = 1; j < line.size(); j++)
+        {
+            ss << " " << line[j];
+        }
+        ss << endl;
+    }
+    return ss.str();
 }
