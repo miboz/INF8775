@@ -6,6 +6,7 @@
 #define INF8775_TP1_MATRIX_H
 #include <vector>
 #include <string>
+#include <array>
 
 using namespace std;
 
