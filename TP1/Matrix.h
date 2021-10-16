@@ -17,7 +17,7 @@ public:
 
     Matrix(int size);
 
-    void populateRow(const vector<int> &newRow);
+    void populateRow(const vector<int> &newRow, int index);
 
     void populateColumn (vector<int> newColumn);
 
@@ -29,7 +29,15 @@ public:
 
     bool subdivise(array<Matrix,4>& miniMatrix) const;
 
+    void fuseMatrix (array<Matrix,4>& miniMatrix);
+
     string toString() const;
+
+    void copyMiniMatrix (Matrix &m, int iMin, int iMax, int jMin, int jMax);
+
+    Matrix operator+(const Matrix &m1);
+
+    Matrix operator-(const Matrix &m1);
 };
 
 

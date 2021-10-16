@@ -16,11 +16,11 @@ class Algorithm {
 
     public:
 
-        static double classic(const Matrix &m1,const Matrix &m2, Matrix &result);
+        static Matrix classic(const Matrix &a, const Matrix &b);
 
-        static double recursif(const Matrix &m1,const Matrix &m2, Matrix &result);
+        static Matrix recursif(const Matrix &a, const Matrix &b);
 
-        static double recursifAvecLimite(const Matrix &m1,const Matrix &m2, Matrix &result);
+        static Matrix recursifAvecLimite(const Matrix &a, const Matrix &b,const int limite);
 };
 
 

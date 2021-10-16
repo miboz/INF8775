@@ -4,6 +4,7 @@
 #include <iomanip>
 #include "Matrix.h"
 #include "Algorithm.h"
+#include "chrono"
 
 using namespace std;
 
@@ -41,24 +42,41 @@ Matrix getMatrixFromFileName(const string& fileName) {
     return {matrixData};
 }
 
+Matrix getResult(const Matrix &matrix1, const Matrix &matrix2, const string &algorithmType) {
+    if (algorithmType == "conv") {
+        return Algorithm::classic(matrix1, matrix2);
+    }
+    if (algorithmType == "strassen") {
+        return Algorithm::recursif(matrix1, matrix2);
+    }
+    return Algorithm::recursifAvecLimite(matrix1, matrix2, 4);
+}
+
 int main(int argc, char** argv) {
-    if (argc != 3) {
-        cerr << "Must give 2 arguments";
+    if (argc != 5) {
+        cerr << "Must give 4 arguments";
         return 1;
     }
     // TODO se rappeler de faire ca avec ;es argv[1] et argv[2]
-    string folder = "ex/s6-t1-n2-r1/";
-    string pathM1 = folder + "ex6_0";
-    string pathM2 = folder + "ex6_1";
+    string folder = "ex/s2-t5-n5-r1/";
+    string pathM1 = argv[1];
+    string pathM2 = argv[2];
+    string algorithmType = argv[3];
+    string printParams = argv[4];
     Matrix matrix1 = getMatrixFromFileName(pathM1);
     Matrix matrix2 = getMatrixFromFileName(pathM2);
-//    cout << matrix1.toString();
-//    cout << matrix2.toString();
-    Matrix result = Matrix(matrix1.getSize());
-    double time = Algorithm::classic(matrix1, matrix2, result);
-    double a = 64123.1;
-//    cout << result.toString();
-    cout << std::fixed << setprecision(2);
-    cout << time << endl;
+    auto start = chrono::steady_clock::now();
+
+    Matrix result = getResult(matrix1, matrix2, algorithmType);
+
+    auto end = chrono::steady_clock::now();
+    auto diff = end - start;
+
+    if (printParams.find('p') != std::string::npos) {
+        cout << result.toString();
+    }
+    if (printParams.find('t') != std::string::npos) {
+        cout <<  chrono::duration <double, milli> (diff).count();
+    }
     return 0;
 }
