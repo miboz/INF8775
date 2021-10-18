@@ -1,27 +1,21 @@
-//
-// Created by milen on 2021-09-29.
-//
-
 #ifndef INF8775_TP1_ALGORITHM_H
 #define INF8775_TP1_ALGORITHM_H
-
-
-#include "Matrix.h"
 
 class Algorithm {
 
     private:
 
-        Algorithm();
+        static int ***splitMatrix(int **m, const int &halfSize);
+
+        static int **addMatrix(int **a, int **b, int** result, const int &size);
+
+        static int **subtractMatrix(int **a, int **b, int** result, const int &size);
 
     public:
 
-        static Matrix classic(const Matrix &a, const Matrix &b);
+        static int **classic(int **a, int **b, const int &size);
 
-        static Matrix recursif(const Matrix &a, const Matrix &b);
-
-        static Matrix recursifAvecLimite(const Matrix &a, const Matrix &b,const int limite);
+        static int **strassen(int **a, int **b, const int &size, const int &limit);
 };
-
 
 #endif //INF8775_TP1_ALGORITHM_H
