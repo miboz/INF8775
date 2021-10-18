@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "Hello world!"
+
+./INF8775_tp1 "$@"
