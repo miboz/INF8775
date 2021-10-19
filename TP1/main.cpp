@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include "Matrix.h"
 #include "Algorithm.h"
 #include "chrono"
