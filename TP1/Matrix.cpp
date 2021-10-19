@@ -7,30 +7,30 @@
 #include <array>
 #include <sstream>
 
-Matrix::Matrix(vector<vector<int>> newData){
+Matrix::Matrix(int** newData, int size){
+    matrixSize = size;
 
     data = newData;
 }
 
 Matrix::Matrix(int size) {
+    matrixSize = size;
+    data = new int*[size];
 
     for (int i = 0; i < size; ++i) {
-        vector<int> matrixLine(size);
-        data.push_back(matrixLine);
+        data[i] = new int[size];
     }
 }
 
-void Matrix::populateRow (const vector<int> &newRow, int index) {
+void Matrix::populateRow (int* &newRow, int index) {
     data[index] = newRow;
 }
 
-void Matrix::populateColumn (vector<int> newColumn) {
+void Matrix::populateColumn (int* newColumn, int index) {
 
-    if (data.size() == newColumn.size()) {
-        for (int i=0;i<data.size();i++) {
-            data[i].push_back(newColumn[i]);
+        for (int i=0;i<matrixSize;i++) {
+            data[i][index] = newColumn[i];
         }
-    }
 }
 
 int Matrix::getNumber(int i, int j) const {
@@ -42,36 +42,34 @@ void Matrix::setNumber(const int &i, const int &j, const int &value) {
 }
 
 int Matrix::getSize() const {
-    return data.size();
+    return matrixSize;
 }
 
 
 bool Matrix::subdivise(array<Matrix,4>& miniMatrix) const {
-    if(data.size() % 2 != 0) {
+    if(matrixSize % 2 != 0) {
         return false;
     }
-    int halfsize = data.size()/2;
-    for (int i=0;i<data.size();i++) {
-        if(i<halfsize){
-            miniMatrix[0].populateRow(vector<int> (data[i].begin(), data[i].begin() + halfsize), i);
-            miniMatrix[1].populateRow(vector<int> (data[i].begin() + halfsize, data[i].end()), i);
-        } else {
-            miniMatrix[2].populateRow(vector<int> (data[i].begin(), data[i].begin() + halfsize), i - halfsize);
-            miniMatrix[3].populateRow(vector<int> (data[i].begin() + halfsize, data[i].end()), i - halfsize);
+    int halfsize = matrixSize/2;
+    for(int i=0; i<halfsize; i++) {
+        for(int j=0; j<halfsize; j++) {
+            miniMatrix[0].setNumber(i,j,data[i][j]);
+            miniMatrix[1].setNumber(i,j, data[i][halfsize + j]);
+            miniMatrix[2].setNumber(i,j, data[halfsize + i][j]);
+            miniMatrix[3].setNumber(i,j, data[halfsize + i][halfsize + j]);
         }
     }
-
-    return true;
+            return true;
 }
 
 string Matrix::toString() const {
     std::stringstream ss;
-    for (auto & line : data)
+    for(int i=0; i < matrixSize; i++)
     {
-        ss << line[0];
-        for (int j = 1; j < line.size(); j++)
+        ss << data[i][0];
+        for (int j = 1; j < matrixSize; j++)
         {
-            ss << " " << line[j];
+            ss << " " << data[i][j];
         }
         ss << endl;
     }
@@ -80,8 +78,8 @@ string Matrix::toString() const {
 
 Matrix Matrix::operator+(const Matrix &m1) {
     Matrix matrixTemp = Matrix(this->getSize());
-    for (int i=0; i < data.size(); i++) {
-        for (int j=0; j < data[i].size(); j++) {
+    for (int i=0; i < matrixSize; i++) {
+        for (int j=0; j < matrixSize; j++) {
             matrixTemp.setNumber(i, j, this->getNumber(i, j) + m1.getNumber(i, j));
         }
     }
@@ -90,8 +88,8 @@ Matrix Matrix::operator+(const Matrix &m1) {
 
 Matrix Matrix::operator-(const Matrix &m1) {
     Matrix matrixTemp(this->getSize());
-    for (int i=0; i < data.size(); i++) {
-        for (int j=0; j < data[i].size(); j++) {
+    for (int i=0; i < matrixSize; i++) {
+        for (int j=0; j < matrixSize; j++) {
             matrixTemp.setNumber(i, j, getNumber(i, j) - m1.getNumber(i, j));
         }
     }
@@ -99,7 +97,7 @@ Matrix Matrix::operator-(const Matrix &m1) {
 }
 
 void Matrix::fuseMatrix (array<Matrix,4>& miniMatrix) {
-    int size = data.size();
+    int size = matrixSize;
     int halfsize = size/2;
 
     copyMiniMatrix(miniMatrix[0], 0, halfsize, 0, halfsize);
@@ -115,4 +113,15 @@ void Matrix::copyMiniMatrix (Matrix &m, int iMin, int iMax, int jMin, int jMax) 
             setNumber(i, j, m.getNumber(i - iMin, j - jMin));
         }
     }
+}
+
+void Matrix::deleteMatrix() {
+    for (int i = 0; i < matrixSize; ++i) {
+        delete[] data[i];
+    }
+    delete[] data;
+}
+
+int** Matrix::getData() {
+    return data;
 }

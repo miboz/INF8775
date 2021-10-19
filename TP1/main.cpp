@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <iomanip>
 #include "Matrix.h"
 #include "Algorithm.h"
 #include "chrono"
+#include "Strassen.hpp"
 
 using namespace std;
 
@@ -29,17 +29,22 @@ Matrix getMatrixFromFileName(const string& fileName) {
     string line;
     getline(fileStream, line);
     int size = (int)pow(2, stoi(line));
-    vector<vector<int>> matrixData;
+    int** matrixData = new int*[size];
+
+    for(int i=0; i<size; i++)
+        matrixData[i] = new int[size];
 
     for (int i = 0; i < size; ++i) {
         getline(fileStream, line);
         vector<int> matrixLine;
         splitString(line, matrixLine);
-        matrixData.push_back(matrixLine);
+        for (int j=0;j<size;j++) {
+            matrixData[i][j] = matrixLine[j];
+        }
     }
     fileStream.close();
 
-    return {matrixData};
+    return {matrixData, size};
 }
 
 Matrix getResult(const Matrix &matrix1, const Matrix &matrix2, const string &algorithmType) {
@@ -49,7 +54,7 @@ Matrix getResult(const Matrix &matrix1, const Matrix &matrix2, const string &alg
     if (algorithmType == "strassen") {
         return Algorithm::recursif(matrix1, matrix2);
     }
-    return Algorithm::recursifAvecLimite(matrix1, matrix2, 4);
+    return Algorithm::recursifAvecLimite(matrix1, matrix2, 16);
 }
 
 int main(int argc, char** argv) {
@@ -78,5 +83,21 @@ int main(int argc, char** argv) {
     if (printParams.find('t') != std::string::npos) {
         cout <<  chrono::duration <double, milli> (diff).count();
     }
+
+
+
+
+
+    /*auto start2 = chrono::steady_clock::now();
+
+    int** result2 = strassenMultiply(matrix1.getData(), matrix2.getData(), matrix1.getSize());
+
+    auto end2 = chrono::steady_clock::now();
+    auto diff2 = end2 - start2;
+
+        cout << "\n test: \n";
+
+        cout <<  chrono::duration <double, milli> (diff2).count();*/
+
     return 0;
 }
