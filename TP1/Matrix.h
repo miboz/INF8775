@@ -5,6 +5,7 @@
 #ifndef INF8775_TP1_MATRIX_H
 #define INF8775_TP1_MATRIX_H
 #include <string>
+#include <array>
 
 using namespace std;
 
