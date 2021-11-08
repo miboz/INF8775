@@ -1,5 +1,6 @@
-#include "Graph.h"
 #include <iostream>
+#include <set>
+#include "Graph.h"
 
 using namespace std;
 
@@ -17,9 +18,13 @@ string Graph::toString() {
     if (nbNodes == 0) {
         return "";
     }
+    set<int> distinctLabels;
     string result = to_string(nodes[0].getLabel());
     for (int i = 1; i < nbNodes; ++i) {
-        result += " " + to_string(nodes[i].getLabel());
+        int label = nodes[i].getLabel();
+        result += " " + to_string(label);
+        distinctLabels.insert(label);
     }
+    result = to_string(distinctLabels.size()) + "\n" + result;
     return result;
 }
