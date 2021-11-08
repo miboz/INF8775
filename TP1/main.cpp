@@ -119,6 +119,21 @@ void parseFlags(int argc, char** argv) {
     }
 }
 
+int **strassen(int** a, int** b) {
+    int n = (int)sqrt(a[0][0]);
+    int** c = new int*[n];
+    for (int i = 0; i < n; ++i) {
+        c[i] = new int[n];
+    }
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            c[i][j] = 0;
+        }
+    }
+    Strassen::strassen(a, b, c, n);
+    return c;
+}
+
 int main(int argc, char** argv) {
     parseFlags(argc, argv);
     Matrix matrix1 = getMatrixFromFileName(pathM1);
