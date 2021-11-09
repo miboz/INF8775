@@ -4,14 +4,14 @@
 
 using namespace std;
 
-Graph::Graph(int& n) : nbNodes(n), nodes(new Node[n]){}
-
-void Graph::addEdge(const int& i, const int& j) {
-    nodes[i].addEdge(nodes + j);
+Graph::Graph(int& n) : nbNodes(n) {
+    nodes.reserve(nbNodes);
+    for (int i = 0; i < nbNodes; ++i)
+        nodes.emplace_back(i);
 }
 
-Graph::~Graph() {
-    delete[] nodes;
+void Graph::addEdge(const int& i, const int& j) {
+    nodes[i].addEdge(&nodes[j]);
 }
 
 string Graph::toString() {
@@ -19,6 +19,7 @@ string Graph::toString() {
         return "";
     }
     set<int> distinctLabels;
+    distinctLabels.insert(nodes[0].getLabel());
     string result = to_string(nodes[0].getLabel());
     for (int i = 1; i < nbNodes; ++i) {
         int label = nodes[i].getLabel();
@@ -27,4 +28,8 @@ string Graph::toString() {
     }
     result = to_string(distinctLabels.size()) + "\n" + result;
     return result;
+}
+
+vector<Node>& Graph::getNodes() {
+    return nodes;
 }

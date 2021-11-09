@@ -6,6 +6,8 @@
 #include "BranchAndBound.h"
 #include "TabuSearch.h"
 
+// TODO normaliser les type* a vs type *a et meme chose avec les &
+
 using namespace std;
 
 bool printFlag = false;

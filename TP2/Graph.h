@@ -7,12 +7,12 @@
 class Graph {
 private:
     int nbNodes;
-    Node* nodes;
+    std::vector<Node> nodes;
 public:
     explicit Graph(int& n);
-    ~Graph();
 
     void addEdge(const int& i, const int& j);
+    std::vector<Node>& getNodes();
 
     std::string toString();
 };
