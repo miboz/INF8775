@@ -1,5 +1,6 @@
 #include <iostream>
 #include <chrono>
+#include <cstring>
 #include "Graph.h"
 #include "utils.cpp"
 #include "GreedyAlgorithm.h"
