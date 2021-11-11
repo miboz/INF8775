@@ -11,6 +11,17 @@ private:
         int newLabel;
         int currentCost;
     };
+
+    static void addNextStates(std::stack<StackElement> &stackNodesToProcess,
+                       better_priority_queue::updatable_priority_queue<int, Node *> &pQ,
+                       StackElement &stackElement);
+    static void travelDown(std::stack<Node*> &stackNodesToProcess,
+                       better_priority_queue::updatable_priority_queue<int, Node *> &pQ,
+                       StackElement &stackElement);
+    static void travelUp(std::stack<Node*> &stackNodesToProcess,
+                       better_priority_queue::updatable_priority_queue<int, Node *> &pQ,
+                       StackElement &stackElement,
+                       int& level);
 public:
     static void solve(Graph *graph);
 };

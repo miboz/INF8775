@@ -1,6 +1,5 @@
 #include <stack>
 #include <set>
-#include <iostream>
 #include "updatable_priority_queue.h"
 #include "BranchAndBound.h"
 #include "GreedyAlgorithm.h"
@@ -37,36 +36,9 @@ void BranchAndBound::solve(Graph *graph) {
             continue;
         }
         if (stackElement.level > level) {
-            // Go down
-            Node& node = *pQ.pop_value().priority;
-            processedNodes.push(&node);
-            node.setLabel(stackElement.newLabel);
-            for (auto neighbor : node.getNeighbors()) {
-                pQ.update(neighbor->getId(), neighbor);
-            }
+            travelDown(processedNodes, pQ, stackElement);
         } else {
-            int limit = level - stackElement.level;
-            set<Node*> nodesToUpdate;
-            Node* currentNode;
-            for (int i = 0; i <= limit; ++i) {
-                currentNode = processedNodes.top();
-                processedNodes.pop();
-                int newLabel;
-                if (i != limit) {
-                    pQ.push(currentNode->getId(), currentNode);
-                    newLabel = Node::UNLABELLED;
-                } else {
-                    newLabel = stackElement.newLabel;
-                }
-                currentNode->setLabel(newLabel);
-                for (auto neighbor : currentNode->getNeighbors()) {
-                    nodesToUpdate.insert(neighbor);
-                }
-            }
-            for (auto node : nodesToUpdate) {
-                pQ.update(node->getId(), node);
-            }
-            processedNodes.push(currentNode);
+            travelUp(processedNodes, pQ, stackElement, level);
         }
         level = stackElement.level;
         // New best solution found
@@ -77,16 +49,60 @@ void BranchAndBound::solve(Graph *graph) {
             }
             continue;
         }
-        // Push the next node to process with valid label in the stack
-        auto nextNodeTotalNeighborsLabelCount = pQ.top().priority->getTotalNeighborsLabelCount();
-        for (int i = 0; i <= stackElement.currentCost; ++i) {
-            if (!nextNodeTotalNeighborsLabelCount.contains(i)) {
-                stackNodesToProcess.push(StackElement{
-                        stackElement.level + 1,
-                        i,
-                        stackElement.currentCost + (i == stackElement.currentCost)});
-            }
-        }
+        addNextStates(stackNodesToProcess, pQ, stackElement);
     }
     graph->setState(bestSolution);
+}
+
+void BranchAndBound::addNextStates(stack<StackElement>& stackNodesToProcess,
+                                   better_priority_queue::updatable_priority_queue<int, Node*>& pQ,
+                                   StackElement& stackElement) {
+    auto nextNodeTotalNeighborsLabelCount = pQ.top().priority->getTotalNeighborsLabelCount();
+    for (int i = 0; i <= stackElement.currentCost; ++i) {
+        if (!nextNodeTotalNeighborsLabelCount.contains(i)) {
+            stackNodesToProcess.push(StackElement{
+                    stackElement.level + 1,
+                    i,
+                    stackElement.currentCost + (i == stackElement.currentCost)});
+        }
+    }
+}
+
+void BranchAndBound::travelDown(stack<Node*>& processedNodes,
+                                   better_priority_queue::updatable_priority_queue<int, Node*>& pQ,
+                                   StackElement& stackElement) {
+    Node& node = *pQ.pop_value().priority;
+    processedNodes.push(&node);
+    node.setLabel(stackElement.newLabel);
+    for (auto neighbor : node.getNeighbors()) {
+        pQ.update(neighbor->getId(), neighbor);
+    }
+}
+
+void BranchAndBound::travelUp(stack<Node*>& processedNodes,
+                                   better_priority_queue::updatable_priority_queue<int, Node*>& pQ,
+                                   StackElement& stackElement,
+                                   int& level) {
+    int limit = level - stackElement.level;
+    set<Node*> nodesToUpdate;
+    Node* currentNode;
+    for (int i = 0; i <= limit; ++i) {
+        currentNode = processedNodes.top();
+        processedNodes.pop();
+        int newLabel;
+        if (i != limit) {
+            pQ.push(currentNode->getId(), currentNode);
+            newLabel = Node::UNLABELLED;
+        } else {
+            newLabel = stackElement.newLabel;
+        }
+        currentNode->setLabel(newLabel);
+        for (auto neighbor : currentNode->getNeighbors()) {
+            nodesToUpdate.insert(neighbor);
+        }
+    }
+    for (auto node : nodesToUpdate) {
+        pQ.update(node->getId(), node);
+    }
+    processedNodes.push(currentNode);
 }
