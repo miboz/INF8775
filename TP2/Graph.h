@@ -18,6 +18,8 @@ public:
     void setState(const std::vector<int>& state);
 
     std::string toString();
+
+    void saveSolution(std::vector<int> &v);
 };
 
 

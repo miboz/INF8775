@@ -16,9 +16,7 @@ void BranchAndBound::solve(Graph *graph) {
     vector<int> bestSolution;
     vector<Node>& nodes = graph->getNodes();
     bestSolution.reserve(nodes.size());
-    for (auto & node : nodes) {
-        bestSolution.push_back(node.getLabel());
-    }
+    graph->saveSolution(bestSolution);
     graph->reset();
     better_priority_queue::updatable_priority_queue<int, Node*> pQ;
     for (int i = 0; i < nodes.size(); ++i) {
@@ -44,9 +42,7 @@ void BranchAndBound::solve(Graph *graph) {
         // New best solution found
         if (pQ.empty()) {
             upperBound = stackElement.currentCost;
-            for (int i = 0; i < nodes.size(); ++i) {
-                bestSolution[i] = nodes[i].getLabel();
-            }
+            graph->saveSolution(bestSolution);
             continue;
         }
         addNextStates(stackNodesToProcess, pQ, stackElement);

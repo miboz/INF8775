@@ -59,3 +59,12 @@ void Graph::setState(const vector<int>& state) {
         nodes[i].setLabel(state[i]);
     }
 }
+
+void Graph::saveSolution(vector<int>& v) {
+    if (v.empty())
+        for ( auto& node : nodes)
+            v.push_back(node.getLabel());
+    else
+        for (int i = 0; i < v.size(); ++i)
+            v[i] = nodes[i].getLabel();
+}
