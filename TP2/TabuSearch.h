@@ -3,14 +3,17 @@
 
 
 #include "Graph.h"
-#include "updatable_priority_queue.h"
 
 class TabuSearch {
 private:
-    static void reduceDistinctLabelCount(Graph* graph);
-    static bool repairGraph(Graph* graph);
-    static void incrementConflictCount(better_priority_queue::updatable_priority_queue<int, int*>& conflictPQ, int node);
+    // TODO Test multiple values and find the best (could vary depending on the number of nodes)
+    static const int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 10000;
+    static const int ALPHA = 2;
+    static const int G = 10;
 
+    static int getRandomNumber();
+    static int reduceDistinctLabelCount(Graph* graph);
+    static bool repairGraph(Graph* graph, int conflictCount);
 public:
     static void solve(Graph *graph);
 };
