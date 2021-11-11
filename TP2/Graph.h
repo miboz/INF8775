@@ -6,7 +6,6 @@
 
 class Graph {
 private:
-    int nbNodes;
     std::vector<Node> nodes;
 public:
     explicit Graph(int& n);

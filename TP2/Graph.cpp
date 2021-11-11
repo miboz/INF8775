@@ -4,9 +4,9 @@
 
 using namespace std;
 
-Graph::Graph(int& n) : nbNodes(n) {
-    nodes.reserve(nbNodes);
-    for (int i = 0; i < nbNodes; ++i)
+Graph::Graph(int& n) {
+    nodes.reserve(n);
+    for (int i = 0; i < n; ++i)
         nodes.emplace_back(i);
 }
 
@@ -16,13 +16,13 @@ void Graph::addEdge(const int& i, const int& j) {
 }
 
 string Graph::toString() {
+    int nbNodes = nodes.size();
     if (nbNodes == 0) {
         return "";
     }
     string result = to_string(getCost()) + "\n";
     result += to_string(nodes[0].getLabel());
     for (int i = 1; i < nbNodes; ++i) {
-        // neigbours
         vector<Node*>& neighbours = nodes[i].getNeighbors();
         // TODO remove after testing
         for(Node* n : neighbours) {
@@ -42,8 +42,8 @@ vector<Node>& Graph::getNodes() {
 
 int Graph::getCost() {
     set<int> distinctLabels;
-    for (int i = 0; i < nbNodes; ++i) {
-        distinctLabels.insert(nodes[i].getLabel());
+    for (auto & node : nodes) {
+        distinctLabels.insert(node.getLabel());
     }
     return distinctLabels.size();
 }
