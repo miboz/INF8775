@@ -18,18 +18,42 @@ string Graph::toString() {
     if (nbNodes == 0) {
         return "";
     }
-    set<int> distinctLabels;
-    distinctLabels.insert(nodes[0].getLabel());
-    string result = to_string(nodes[0].getLabel());
+    string result = to_string(getCost()) + "\n";
+    result += to_string(nodes[0].getLabel());
     for (int i = 1; i < nbNodes; ++i) {
+        // neigbours
+        vector<Node*>& neighbours = nodes[i].getNeighbors();
+        // TODO remove after testing
+        for(Node* n : neighbours) {
+            if (n->getLabel() == nodes[i].getLabel()) {
+                cout << "ERROR: " << n->getId() << " " << nodes[i].getId() << endl;
+            }
+        }
         int label = nodes[i].getLabel();
         result += " " + to_string(label);
-        distinctLabels.insert(label);
     }
-    result = to_string(distinctLabels.size()) + "\n" + result;
     return result;
 }
 
 vector<Node>& Graph::getNodes() {
     return nodes;
+}
+
+int Graph::getCost() {
+    set<int> distinctLabels;
+    for (int i = 0; i < nbNodes; ++i) {
+        distinctLabels.insert(nodes[i].getLabel());
+    }
+    return distinctLabels.size();
+}
+
+void Graph::reset() {
+    for (auto& node : nodes)
+        node.reset();
+}
+
+void Graph::setState(const vector<int>& state) {
+    for (int i = 0; i < state.size(); ++i) {
+        nodes[i].setLabel(state[i]);
+    }
 }

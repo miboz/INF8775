@@ -47,9 +47,14 @@ void Node::setLabel(int newLabel) {
             if (labelCount[oldLabel] == 0)
                 labelCount.erase(oldLabel);
         }
-        if (!labelCount.contains(newLabel))
-            labelCount[newLabel] = 1;
-        else
+        if (labelCount.contains(newLabel))
             ++labelCount[newLabel];
+        else if (newLabel != UNLABELLED)
+            labelCount[newLabel] = 1;
     }
+}
+
+void Node::reset() {
+    label = UNLABELLED;
+    totalNeighborsLabelCount.clear();
 }

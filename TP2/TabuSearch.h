@@ -1,7 +1,3 @@
-//
-// Created by milen on 2021-11-08.
-//
-
 #ifndef TP2_TABUSEARCH_H
 #define TP2_TABUSEARCH_H
 
