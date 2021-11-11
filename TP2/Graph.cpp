@@ -12,6 +12,7 @@ Graph::Graph(int& n) : nbNodes(n) {
 
 void Graph::addEdge(const int& i, const int& j) {
     nodes[i].addEdge(&nodes[j]);
+    nodes[j].addEdge(&nodes[i]);
 }
 
 string Graph::toString() {

@@ -6,19 +6,30 @@
 
 using namespace std;
 
+static void skipNLines(ifstream& file, int n) {
+    for (int i = 0; i < n; ++i) {
+        file.ignore(numeric_limits<streamsize>::max(), file.widen('\n'));
+    }
+}
+
 static Graph* readGraph(const string& filePath) {
     ifstream file(filePath);
-    int n;
-    file >> n;
-    Graph* graph = new Graph(n);
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            bool isEdge;
-            file >> isEdge;
-            if (isEdge) {
-                graph->addEdge(i, j);
-            }
-        }
+    skipNLines(file, 11);
+    file.ignore(7);
+    int nbNodes;
+    int nbEdges;
+    file >> nbNodes;
+    file >> nbEdges;
+    Graph* graph = new Graph(nbNodes);
+    skipNLines(file, 2);
+    int e1;
+    int e2;
+    for (int i = 0; i < nbEdges; ++i) {
+        file.ignore(2);
+        file >> e1;
+        file >> e2;
+        skipNLines(file, 1);
+        graph->addEdge(e1 - 1, e2 - 1);
     }
     return graph;
 }
