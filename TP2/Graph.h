@@ -7,6 +7,7 @@
 class Graph {
 private:
     std::vector<Node> nodes;
+    std::vector<std::pair<int, int>> edges;
 public:
     explicit Graph(int& n);
 
