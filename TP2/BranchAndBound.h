@@ -3,6 +3,8 @@
 
 
 #include "Graph.h"
+#include <stack>
+#include "updatable_priority_queue.h"
 
 class BranchAndBound {
 private:
