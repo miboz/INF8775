@@ -33,9 +33,11 @@ void parseFlags(int argc, char** argv) {
 void solve(Graph* graph) {
     if (algorithmType == "glouton") {
         GreedyAlgorithm::solve(graph);
+        return;
     }
     if (algorithmType == "branch_bound") {
         BranchAndBound::solve(graph);
+        return;
     }
     TabuSearch::solve(graph);
 }
