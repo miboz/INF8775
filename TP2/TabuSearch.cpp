@@ -2,18 +2,24 @@
 #include "GreedyAlgorithm.h"
 #include <list>
 #include <set>
+#include <iostream>
 #include <climits>
 
 using namespace std;
+
+int TabuSearch::maxIterationsWithoutImprovement;
 
 void TabuSearch::solve(Graph *graph) {
     GreedyAlgorithm::solve(graph);
     bool success;
     vector<int> bestSolution;
     bestSolution.reserve(graph->getNodes().size());
+    maxIterationsWithoutImprovement = graph->getNodes().size() * C;
     do {
         graph->saveSolution(bestSolution);
-        success = repairGraph(graph, reduceDistinctLabelCount(graph));
+        int nbConflicts = reduceDistinctLabelCount(graph);
+        if (nbConflicts == 0) continue;
+        success = repairGraph(graph, nbConflicts);
     } while(success);
     graph->setState(bestSolution);
 }
@@ -21,26 +27,22 @@ void TabuSearch::solve(Graph *graph) {
 int TabuSearch::reduceDistinctLabelCount(Graph* graph) {
     list<Node*> nodesToChange;
     vector<Node>& nodes = graph->getNodes();
-    map<int, int> conflictCountByLabel;
     int labelToRemove = graph->getCost() - 1;
+    vector<int> conflictCount(labelToRemove, 0);
     for (auto& node : nodes) {
         if (node.getLabel() == labelToRemove) {
             for (auto& neighborCount : node.getTotalNeighborsLabelCount()) {
-                if (!conflictCountByLabel.contains(neighborCount.first))
-                    conflictCountByLabel[neighborCount.first] = 0;
-                conflictCountByLabel[neighborCount.first] += neighborCount.second;
+                conflictCount[neighborCount.first] += neighborCount.second;
             }
             nodesToChange.push_back(&node);
-        } else if (!conflictCountByLabel.contains(node.getLabel()))
-            // In case of a label that is not adjacent to the label to remove
-            conflictCountByLabel[node.getLabel()] = 0;
+        }
     }
     int bestLabelConflictsCount = INT_MAX;
     int bestLabel;
-    for (auto& labelConflicts : conflictCountByLabel) {
-        if (labelConflicts.second < bestLabelConflictsCount) {
-            bestLabelConflictsCount = labelConflicts.second;
-            bestLabel = labelConflicts.first;
+    for (int i = 0; i < conflictCount.size(); ++i) {
+        if (conflictCount[i] < bestLabelConflictsCount) {
+            bestLabelConflictsCount = conflictCount[i];
+            bestLabel = i;
         }
     }
     for (auto& node : nodesToChange)
@@ -55,8 +57,7 @@ bool TabuSearch::repairGraph(Graph* graph, int conflictCount) {
     int iteration = 0;
     int iterationsSinceLastImprovement = 0;
     int distinctLabelsCount = graph->getCost();
-    // TODO check the case where the graph has another label less after the repair
-    while (iterationsSinceLastImprovement != MAX_ITERATIONS_WITHOUT_IMPROVEMENT) {
+    while (iterationsSinceLastImprovement != maxIterationsWithoutImprovement) {
         // get best neighbor
         int nodeId;
         int newLabel;
@@ -66,7 +67,9 @@ bool TabuSearch::repairGraph(Graph* graph, int conflictCount) {
                 int label = node.getLabel();
                 if (label == i || tabuSet.contains(make_pair(node.getId(), i))) continue;
                 auto& neighborCount = node.getTotalNeighborsLabelCount();
-                int delta = neighborCount[i] - neighborCount[label];
+                int conflictsToAdd = neighborCount.contains(i) ? neighborCount[i] : 0;
+                int conflictsToRemove = neighborCount.contains(label) ? neighborCount[label] : 0;
+                int delta = conflictsToAdd - conflictsToRemove;
                 if (delta < minDelta) {
                     minDelta = delta;
                     nodeId = node.getId();
@@ -99,7 +102,6 @@ bool TabuSearch::repairGraph(Graph* graph, int conflictCount) {
 
         // end condition
         if (conflictCount < bestConflictCount) {
-            // TODO fix the negative conflict count case (for real)
             if (conflictCount == 0) return true;
             bestConflictCount = conflictCount;
             // Will cancel out to be 0 in the next instruction

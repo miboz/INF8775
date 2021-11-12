@@ -6,8 +6,8 @@
 
 class TabuSearch {
 private:
-    // TODO Test multiple values and find the best (could vary depending on the number of nodes)
-    static const int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 10000;
+    static int maxIterationsWithoutImprovement;
+    const static int C = 200;
     static const int ALPHA = 2;
     static const int G = 10;
 

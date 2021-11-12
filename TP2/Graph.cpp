@@ -24,12 +24,6 @@ string Graph::toString() {
     result += to_string(nodes[0].getLabel());
     for (int i = 1; i < nbNodes; ++i) {
         vector<Node*>& neighbours = nodes[i].getNeighbors();
-        // TODO remove after testing
-        for(Node* n : neighbours) {
-            if (n->getLabel() == nodes[i].getLabel()) {
-                cout << "ERROR: " << n->getId() << " " << nodes[i].getId() << endl;
-            }
-        }
         int label = nodes[i].getLabel();
         result += " " + to_string(label);
     }
