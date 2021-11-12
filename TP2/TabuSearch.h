@@ -6,8 +6,7 @@
 
 class TabuSearch {
 private:
-    static int maxIterationsWithoutImprovement;
-    const static int C = 200;
+    static const int MAX_ITERATIONS_WITHOUT_IMPROVEMENT = 1000;
     static const int ALPHA = 2;
     static const int G = 10;
 

@@ -7,14 +7,11 @@
 
 using namespace std;
 
-int TabuSearch::maxIterationsWithoutImprovement;
-
 void TabuSearch::solve(Graph *graph) {
     GreedyAlgorithm::solve(graph);
     bool success;
     vector<int> bestSolution;
     bestSolution.reserve(graph->getNodes().size());
-    maxIterationsWithoutImprovement = graph->getNodes().size() * C;
     do {
         graph->saveSolution(bestSolution);
         int nbConflicts = reduceDistinctLabelCount(graph);
@@ -57,7 +54,7 @@ bool TabuSearch::repairGraph(Graph *graph, int conflictCount) {
     int iteration = 0;
     int iterationsSinceLastImprovement = 0;
     int distinctLabelsCount = graph->getCost();
-    while (iterationsSinceLastImprovement != maxIterationsWithoutImprovement) {
+    while (iterationsSinceLastImprovement != MAX_ITERATIONS_WITHOUT_IMPROVEMENT) {
         // get best neighbor
         int nodeId;
         int newLabel;
