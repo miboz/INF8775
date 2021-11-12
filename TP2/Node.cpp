@@ -4,7 +4,7 @@ using namespace std;
 
 Node::Node(int id) : id(id) {}
 
-void Node::addEdge(Node* node) {
+void Node::addEdge(Node *node) {
     neighbors.push_back(node);
     ++degree;
 }
@@ -25,11 +25,11 @@ bool Node::operator<(const Node &node) const {
            degree < node.degree;
 }
 
-map<int, int>& Node::getTotalNeighborsLabelCount() {
+map<int, int> &Node::getTotalNeighborsLabelCount() {
     return totalNeighborsLabelCount;
 }
 
-std::vector<Node*>& Node::getNeighbors() {
+std::vector<Node*> &Node::getNeighbors() {
     return neighbors;
 }
 
@@ -41,7 +41,7 @@ void Node::setLabel(int newLabel) {
     int oldLabel = label;
     label = newLabel;
     for (auto neighbor : neighbors) {
-        auto& labelCount = neighbor->getTotalNeighborsLabelCount();
+        auto &labelCount = neighbor->getTotalNeighborsLabelCount();
         if (oldLabel != UNLABELLED) {
             --labelCount[oldLabel];
             if (labelCount[oldLabel] == 0)

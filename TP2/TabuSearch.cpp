@@ -24,14 +24,14 @@ void TabuSearch::solve(Graph *graph) {
     graph->setState(bestSolution);
 }
 
-int TabuSearch::reduceDistinctLabelCount(Graph* graph) {
+int TabuSearch::reduceDistinctLabelCount(Graph *graph) {
     list<Node*> nodesToChange;
-    vector<Node>& nodes = graph->getNodes();
+    vector<Node> &nodes = graph->getNodes();
     int labelToRemove = graph->getCost() - 1;
     vector<int> conflictCount(labelToRemove, 0);
-    for (auto& node : nodes) {
+    for (auto &node : nodes) {
         if (node.getLabel() == labelToRemove) {
-            for (auto& neighborCount : node.getTotalNeighborsLabelCount()) {
+            for (auto &neighborCount : node.getTotalNeighborsLabelCount()) {
                 conflictCount[neighborCount.first] += neighborCount.second;
             }
             nodesToChange.push_back(&node);
@@ -45,12 +45,12 @@ int TabuSearch::reduceDistinctLabelCount(Graph* graph) {
             bestLabel = i;
         }
     }
-    for (auto& node : nodesToChange)
+    for (auto &node : nodesToChange)
         node->setLabel(bestLabel);
     return bestLabelConflictsCount;
 }
 
-bool TabuSearch::repairGraph(Graph* graph, int conflictCount) {
+bool TabuSearch::repairGraph(Graph *graph, int conflictCount) {
     set<pair<int, int>> tabuSet;
     map<int, list<pair<int, int>>> tabuExpirations;
     int bestConflictCount = conflictCount;
@@ -62,11 +62,11 @@ bool TabuSearch::repairGraph(Graph* graph, int conflictCount) {
         int nodeId;
         int newLabel;
         int minDelta = INT_MAX;
-        for (auto& node : graph->getNodes()) {
+        for (auto &node : graph->getNodes()) {
             for (int i = 0; i < distinctLabelsCount; ++i) {
                 int label = node.getLabel();
                 if (label == i || tabuSet.contains(make_pair(node.getId(), i))) continue;
-                auto& neighborCount = node.getTotalNeighborsLabelCount();
+                auto &neighborCount = node.getTotalNeighborsLabelCount();
                 int conflictsToAdd = neighborCount.contains(i) ? neighborCount[i] : 0;
                 int conflictsToRemove = neighborCount.contains(label) ? neighborCount[label] : 0;
                 int delta = conflictsToAdd - conflictsToRemove;
@@ -95,7 +95,7 @@ bool TabuSearch::repairGraph(Graph* graph, int conflictCount) {
 
         // remove expired tabu
         if (tabuExpirations.contains(iteration)) {
-            for (auto& tabuToRemove : tabuExpirations[iteration])
+            for (auto &tabuToRemove : tabuExpirations[iteration])
                 tabuSet.erase(tabuToRemove);
             tabuExpirations.erase(iteration);
         }

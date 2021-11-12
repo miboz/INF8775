@@ -7,8 +7,6 @@
 #include "BranchAndBound.h"
 #include "TabuSearch.h"
 
-// TODO normaliser les type* a vs type *a et meme chose avec les &
-
 using namespace std;
 
 bool printFlag = false;
@@ -16,7 +14,7 @@ bool timeFlag = false;
 string algorithmType;
 string graphPath;
 
-void parseFlags(int argc, char** argv) {
+void parseFlags(int argc, char **argv) {
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-p") == 0) {
             printFlag = true;
@@ -30,7 +28,7 @@ void parseFlags(int argc, char** argv) {
     }
 }
 
-void solve(Graph* graph) {
+void solve(Graph *graph) {
     if (algorithmType == "glouton") {
         GreedyAlgorithm::solve(graph);
         return;
@@ -44,7 +42,7 @@ void solve(Graph* graph) {
 
 int main(int argc, char *argv[]) {
     parseFlags(argc, argv);
-    Graph* graph = readGraph(graphPath);
+    Graph *graph = readGraph(graphPath);
     auto start = chrono::steady_clock::now();
 
     solve(graph);

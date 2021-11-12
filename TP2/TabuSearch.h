@@ -12,8 +12,8 @@ private:
     static const int G = 10;
 
     static int getRandomNumber();
-    static int reduceDistinctLabelCount(Graph* graph);
-    static bool repairGraph(Graph* graph, int conflictCount);
+    static int reduceDistinctLabelCount(Graph *graph);
+    static bool repairGraph(Graph *graph, int conflictCount);
 public:
     static void solve(Graph *graph);
 };

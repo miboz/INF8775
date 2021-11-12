@@ -23,7 +23,7 @@ private:
     static void travelUp(std::stack<Node*> &stackNodesToProcess,
                        better_priority_queue::updatable_priority_queue<int, Node *> &pQ,
                        StackElement &stackElement,
-                       int& level);
+                       int &level);
 public:
     static void solve(Graph *graph);
 };

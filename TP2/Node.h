@@ -17,12 +17,12 @@ public:
     static const int UNLABELLED = -1;
 
     explicit Node(int id);
-    void addEdge(Node* node);
+    void addEdge(Node *node);
     int getLabel() const;
     int getId() const;
     void reset();
-    std::map<int, int>& getTotalNeighborsLabelCount();
-    std::vector<Node*>& getNeighbors();
+    std::map<int, int> &getTotalNeighborsLabelCount();
+    std::vector<Node*> &getNeighbors();
     bool operator>(const Node &node) const;
     bool operator<(const Node &node) const;
 

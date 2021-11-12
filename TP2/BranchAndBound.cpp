@@ -14,7 +14,7 @@ void BranchAndBound::solve(Graph *graph) {
         return;
     }
     vector<int> bestSolution;
-    vector<Node>& nodes = graph->getNodes();
+    vector<Node> &nodes = graph->getNodes();
     bestSolution.reserve(nodes.size());
     graph->saveSolution(bestSolution);
     graph->reset();
@@ -50,9 +50,9 @@ void BranchAndBound::solve(Graph *graph) {
     graph->setState(bestSolution);
 }
 
-void BranchAndBound::addNextStates(stack<StackElement>& stackNodesToProcess,
-                                   better_priority_queue::updatable_priority_queue<int, Node*>& pQ,
-                                   StackElement& stackElement) {
+void BranchAndBound::addNextStates(stack<StackElement> &stackNodesToProcess,
+                                   better_priority_queue::updatable_priority_queue<int, Node*> &pQ,
+                                   StackElement &stackElement) {
     auto nextNodeTotalNeighborsLabelCount = pQ.top().priority->getTotalNeighborsLabelCount();
     for (int i = 0; i <= stackElement.currentCost; ++i) {
         if (!nextNodeTotalNeighborsLabelCount.contains(i)) {
@@ -64,10 +64,10 @@ void BranchAndBound::addNextStates(stack<StackElement>& stackNodesToProcess,
     }
 }
 
-void BranchAndBound::travelDown(stack<Node*>& processedNodes,
-                                   better_priority_queue::updatable_priority_queue<int, Node*>& pQ,
-                                   StackElement& stackElement) {
-    Node& node = *pQ.pop_value().priority;
+void BranchAndBound::travelDown(stack<Node*> &processedNodes,
+                                   better_priority_queue::updatable_priority_queue<int, Node*> &pQ,
+                                   StackElement &stackElement) {
+    Node &node = *pQ.pop_value().priority;
     processedNodes.push(&node);
     node.setLabel(stackElement.newLabel);
     for (auto neighbor : node.getNeighbors()) {
@@ -75,13 +75,13 @@ void BranchAndBound::travelDown(stack<Node*>& processedNodes,
     }
 }
 
-void BranchAndBound::travelUp(stack<Node*>& processedNodes,
-                                   better_priority_queue::updatable_priority_queue<int, Node*>& pQ,
-                                   StackElement& stackElement,
-                                   int& level) {
+void BranchAndBound::travelUp(stack<Node*> &processedNodes,
+                                   better_priority_queue::updatable_priority_queue<int, Node*> &pQ,
+                                   StackElement &stackElement,
+                                   int &level) {
     int limit = level - stackElement.level;
     set<Node*> nodesToUpdate;
-    Node* currentNode;
+    Node *currentNode;
     for (int i = 0; i <= limit; ++i) {
         currentNode = processedNodes.top();
         processedNodes.pop();
