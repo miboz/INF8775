@@ -1,7 +1,7 @@
 density=0.9
 
 
-for nbNodes in $(seq 1 1 500)
+for nbNodes in $(seq 2 1 500)
 do
   for seed in $(seq 0 1 9)
   do
