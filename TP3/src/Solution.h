@@ -15,6 +15,10 @@ public:
     static bool isValidPath(List *path);
 
     static void toLocalNeighbor(Node *a, Node *b);
+
+    static void exploreNeighbors(List *path, int &bestLocalScore, int *bestLocalPath, bool** adjMatrix);
+
+    static void explorePosaNeighbors(List *path, int &bestLocalScore, int *bestLocalPath, bool **adjMatrix);
 };
 
 

@@ -35,6 +35,8 @@ public:
     bool contains(Vertex *value);
     void posaOperation(Node *neighborNode);
     void reverse();
+    void save(int* data, int dataSize) const;
+    void load(const int* data, int dataSize);
     std::string toString();
 };
 

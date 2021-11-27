@@ -88,12 +88,32 @@ void List::reverse() {
     head = currentNode;
 }
 
+// TODO: print depending on flag -p
 string List::toString() {
     stringstream ss;
     for (Node *node = head; node != nullptr; node = node->next)
         ss << node->value->getId() + 1 << " ";
     ss << endl;
     return ss.str();
+}
+
+void List::save(int *data, int dataSize) const {
+    Node* node = head;
+    for (int i = 0; i < dataSize; ++i) {
+        data[i] = node->value->getId();
+        node = node->next;
+    }
+}
+
+void List::load(const int *data, int dataSize) {
+    for (int i = 0; i < dataSize - 1; ++i) {
+        idToNode[data[i]]->next = idToNode[data[i + 1]];
+        idToNode[data[i + 1]]->prev = idToNode[data[i]];
+    }
+    head = idToNode[data[0]];
+    tail = idToNode[data[dataSize - 1]];
+    head->prev = nullptr;
+    tail->next = nullptr;
 }
 
 Node::Node(Vertex *value): value(value) {}

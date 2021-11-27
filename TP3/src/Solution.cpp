@@ -4,56 +4,40 @@
 
 using namespace std;
 
-// TODO : allow local search to change start and end node, also add a way to get out of local max
+// TODO: try faster local search algorithm
+// Greedy local search
 void Solution::solve(Graph *g) {
     List *path = posaHeuristic(g);
     bool** adjMatrix = g->getAdjMatrix();
     int nbVertices = g->getNbVertices();
+    int* bestLocalPath = new int[nbVertices];
     int bestScore = getScore(path);
     // TODO: remove score print for submission
     cout << "score :" << bestScore << endl;
-//    cout << path->toString();
+    cout << "Valid :" << isValidPath(path) << "\n\n";
+    cout << path->toString();
 
     while (bestScore != nbVertices) {
         int bestLocalScore = 0;
-        Node *bestA = nullptr;
-        Node *bestB = nullptr;
-        set<Vertex*> visited;
-        for (Node *a = path->getHead(); a->next->next != nullptr; a = a->next) {
-            Vertex *v = a->value;
-            for (Vertex *w : v->getNeighbors()) {
-                if (visited.contains(w)) continue;
-                Node *b = path->getNodeFromId(w->getId());
-                if (a->next == b) continue;
-                if (b->next == nullptr) continue;
-                if (!adjMatrix[a->next->value->getId()][b->next->value->getId()]) continue;
-                Node *aNext = a->next;
-                toLocalNeighbor(a, b);
-                int score = getScore(path);
-                if (score > bestLocalScore) {
-                    bestLocalScore = score;
-                    bestA = a;
-                    bestB = b;
-                }
-                toLocalNeighbor(a, aNext);
-            }
-            visited.insert(v);
-        }
-        if (bestLocalScore != 0) {
-            toLocalNeighbor(bestA, bestB);
-            if (bestLocalScore > bestScore) {
-                bestScore = bestLocalScore;
-                // TODO: remove score print for submission
-                cout << "score :" << bestScore << endl;
-//                cout << path->toString();
-            }
-        }
+        exploreNeighbors(path, bestLocalScore, bestLocalPath, adjMatrix);
+        explorePosaNeighbors(path, bestLocalScore, bestLocalPath, adjMatrix);
+        path->reverse();
+        explorePosaNeighbors(path, bestLocalScore, bestLocalPath, adjMatrix);
+        path->reverse();
+        if (bestLocalScore <= bestScore) break;
+        path->load(bestLocalPath, nbVertices);
+        bestScore = bestLocalScore;
+        // TODO: remove score print for submission
+        cout << "score :" << bestScore << endl;
+        cout << "Valid :" << isValidPath(path) << endl << endl;
+//            cout << path->toString();
     }
+    delete[] bestLocalPath;
 
     delete path;
 }
 
-
+// Greedy algorithm to add vertices to the path, when impossible, exploring the posa transformations with dfs structure
 // Inspired from https://www.sciencedirect.com/science/article/pii/S0012365X06005097#bib5
 List* Solution::posaHeuristic(Graph *g) {
     const int nbVertices = g->getNbVertices();
@@ -68,9 +52,11 @@ List* Solution::posaHeuristic(Graph *g) {
 
         while (path->getSize() != nbVertices) {
 
+            // add vertex to path greedily
             if (tryExtendPath(path, true)) continue;
             if (tryExtendPath(path, false)) continue;
 
+            // dfs exploration with posa transformations
             set<Node*> visitedEndPoints;
             if (posaSearch(path, visitedEndPoints)) continue;
             path->reverse();
@@ -158,5 +144,38 @@ void Solution::toLocalNeighbor(Node *a, Node *b) {
         currentNode->swap();
         currentNode = currentNode->prev;
     } while (currentNode != a);
+}
+
+void Solution::exploreNeighbors(List *path, int &bestLocalScore, int *bestLocalPath, bool** adjMatrix) {
+    set<Vertex*> visited;
+    for (Node *a = path->getHead(); a->next->next != nullptr; a = a->next) {
+        Vertex *v = a->value;
+        for (Vertex *w : v->getNeighbors()) {
+            if (visited.contains(w)) continue;
+            Node *b = path->getNodeFromId(w->getId());
+            if (a->next == b) continue;
+            if (b->next == nullptr) continue;
+            if (!adjMatrix[a->next->value->getId()][b->next->value->getId()]) continue;
+            Node *aNext = a->next;
+            toLocalNeighbor(a, b);
+            int score = getScore(path);
+            if (score > bestLocalScore) {
+                bestLocalScore = score;
+                path->save(bestLocalPath, path->getSize());
+            }
+            toLocalNeighbor(a, aNext);
+        }
+        visited.insert(v);
+    }
+}
+
+void Solution::explorePosaNeighbors(List *path, int &bestLocalScore, int *bestLocalPath, bool **adjMatrix) {
+    Node* tail = path->getTail();
+    for (auto neighbor : tail->value->getNeighbors()) {
+        Node *neighborNode = path->getNodeFromId(neighbor->getId());
+        path->posaOperation(neighborNode);
+        exploreNeighbors(path, bestLocalScore, bestLocalPath, adjMatrix);
+        path->posaOperation(neighborNode);
+    }
 }
 
