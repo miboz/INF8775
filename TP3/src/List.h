@@ -37,7 +37,7 @@ public:
     void reverse();
     void save(int* data, int dataSize) const;
     void load(const int* data, int dataSize);
-    std::string toString();
+    std::string toString(bool printFlag);
 };
 
 #endif //TP3_LIST_H

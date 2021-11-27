@@ -4,18 +4,14 @@
 
 using namespace std;
 
-// TODO: try faster local search algorithm
 // Greedy local search
-void Solution::solve(Graph *g) {
+void Solution::solve(Graph *g, bool printFlag) {
     List *path = posaHeuristic(g);
     bool** adjMatrix = g->getAdjMatrix();
     int nbVertices = g->getNbVertices();
     int* bestLocalPath = new int[nbVertices];
     int bestScore = getScore(path);
-    // TODO: remove score print for submission
-    cout << "score :" << bestScore << endl;
-    cout << "Valid :" << isValidPath(path) << "\n\n";
-    cout << path->toString();
+    cout << path->toString(printFlag);
 
     while (bestScore != nbVertices) {
         int bestLocalScore = 0;
@@ -27,10 +23,7 @@ void Solution::solve(Graph *g) {
         if (bestLocalScore <= bestScore) break;
         path->load(bestLocalPath, nbVertices);
         bestScore = bestLocalScore;
-        // TODO: remove score print for submission
-        cout << "score :" << bestScore << endl;
-        cout << "Valid :" << isValidPath(path) << endl << endl;
-//            cout << path->toString();
+            cout << path->toString(printFlag);
     }
     delete[] bestLocalPath;
 
@@ -102,36 +95,11 @@ int Solution::getScore(List *path) {
     int score = 0;
     int maxHeight = -1;
     for (Node *node = path->getHead(); node != nullptr; node = node->next) {
-        if (node->value->getHeight() <= maxHeight) continue;
+        if (node->value->getHeight() < maxHeight) continue;
         maxHeight = node->value->getHeight();
         ++score;
     }
     return score;
-}
-
-// TODO: remove validation after asserting that everything works fine
-bool Solution::isValidPath(List *path) {
-    set<Vertex*> visited;
-    Node *tail = path->getTail();
-    for (Node *node = path->getHead(); node != tail; node = node->next) {
-        if (visited.contains(node->value)) {
-            cout << "ERROR: visited vertex twice" << node->value->getId() << endl;
-            return false;
-        }
-        visited.insert(node->value);
-        bool isNeighbor = false;
-        for (Vertex *neighbor : node->value->getNeighbors()) {
-            if (neighbor != node->next->value) continue;
-            isNeighbor = true;
-            break;
-        }
-        if (!isNeighbor) {
-            cout << "ERROR: vertex " << node->value->getId() << " is not a neighbor of "
-            << node->next->value->getId() << endl;
-            return false;
-        }
-    }
-    return true;
 }
 
 void Solution::toLocalNeighbor(Node *a, Node *b) {

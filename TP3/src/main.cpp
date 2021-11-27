@@ -21,6 +21,6 @@ int main(int argc, char *argv[]) {
     parseFlags(argc, argv);
     srand(RANDOM_SEED);
     Graph *graph = readGraph(graphPath);
-    Solution::solve(graph);
+    Solution::solve(graph, printFlag);
     delete graph;
 }

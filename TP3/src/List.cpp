@@ -88,15 +88,6 @@ void List::reverse() {
     head = currentNode;
 }
 
-// TODO: print depending on flag -p
-string List::toString() {
-    stringstream ss;
-    for (Node *node = head; node != nullptr; node = node->next)
-        ss << node->value->getId() + 1 << " ";
-    ss << endl;
-    return ss.str();
-}
-
 void List::save(int *data, int dataSize) const {
     Node* node = head;
     for (int i = 0; i < dataSize; ++i) {
@@ -114,6 +105,24 @@ void List::load(const int *data, int dataSize) {
     tail = idToNode[data[dataSize - 1]];
     head->prev = nullptr;
     tail->next = nullptr;
+}
+
+string List::toString(bool printFlag) {
+    stringstream ss;
+    if (printFlag) {
+        for (Node *node = head; node != nullptr; node = node->next)
+            ss << node->value->getId() + 1 << " ";
+        ss << endl;
+        return ss.str();
+    }
+    int cost = 0;
+    int maxHeight = -1;
+    for (Node *node = head; node != nullptr; node = node->next) {
+        if (node->value->getHeight() >= maxHeight) maxHeight = node->value->getHeight();
+        else ++cost;
+    }
+    ss << cost << endl;
+    return ss.str();
 }
 
 Node::Node(Vertex *value): value(value) {}

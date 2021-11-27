@@ -7,7 +7,7 @@
 
 class Solution {
 public:
-    static void solve(Graph *g);
+    static void solve(Graph *g, bool printFlag);
     static List* posaHeuristic(Graph *g);
     static bool tryExtendPath(List *path, bool isTail);
     static bool posaSearch(List *path, std::set<Node*> &visitedEndpoints);
